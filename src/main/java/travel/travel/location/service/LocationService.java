@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import travel.travel.image.domain.Image;
 import travel.travel.image.dto.ImageResDto;
-import travel.travel.image.repository.ImageRepository;
 import travel.travel.image.service.ImageService;
 import travel.travel.location.domain.Location;
 import travel.travel.location.dto.LocationCreateReqDto;
