@@ -49,7 +49,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private Member save(Long kakaoId) {
         Optional<Member> member = memberRepository
-                .findByKakaoId(kakaoId);
+                .findById(kakaoId);
 
         if (member.isPresent()) {
             log.info("member 이미 존재 : {}", member);
