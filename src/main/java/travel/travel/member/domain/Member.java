@@ -14,4 +14,15 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private Long kakaoId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    public Member(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        this.role = Role.USER;
+    }
 }
