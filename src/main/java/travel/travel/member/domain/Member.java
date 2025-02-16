@@ -10,8 +10,16 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class Member extends BaseEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    public Member(Long kakaoId) {
+        this.id = kakaoId;
+        this.role = Role.USER;
+    }
 }
