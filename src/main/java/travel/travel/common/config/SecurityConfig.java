@@ -8,10 +8,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 import travel.travel.common.handler.OAuth2AuthenticationFailureHandler;
 import travel.travel.common.handler.OAuth2AuthenticationSuccessHandler;
 import travel.travel.common.service.CustomOAuth2UserService;
+import travel.travel.common.service.JwtAuthenticationFilter;
+import travel.travel.common.service.JwtTokenProvider;
 
 @Slf4j
 @Configuration
@@ -19,6 +22,7 @@ import travel.travel.common.service.CustomOAuth2UserService;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JwtTokenProvider jwtTokenProvider;
     private final CorsConfigurationSource corsConfigurationSource;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
@@ -49,8 +53,14 @@ public class SecurityConfig {
                         .failureHandler(oAuth2AuthenticationFailureHandler)
                         .userInfoEndpoint(userinfo -> userinfo
                                 .userService(customOAuth2UserService))
-                );
+                )
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtTokenProvider);
     }
 }

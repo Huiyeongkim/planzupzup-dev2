@@ -1,12 +1,22 @@
 package travel.travel.common.service;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtTokenProvider {
@@ -25,6 +35,7 @@ public class JwtTokenProvider {
         Date validity = new Date(now.getTime() + accessMills);
 
         return Jwts.builder()
+                .setSubject(id)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -33,7 +44,7 @@ public class JwtTokenProvider {
 
     public String generateRefreshToken() {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + accessMills);
+        Date validity = new Date(now.getTime() + refreshMills);
 
         return Jwts.builder()
                 .setIssuedAt(now)
@@ -48,5 +59,44 @@ public class JwtTokenProvider {
                 .httpOnly(true)
                 .sameSite("Lax")
                 .build();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException e) {
+            return false;
+        }
+    }
+
+    public Authentication getAuthentication(String token) {
+        Claims claims = parseClaims(token);
+        String username = claims.getSubject();
+
+        String roles = claims.get("roles", String.class);
+        Collection<GrantedAuthority> authorities = (roles != null)
+                ? Arrays.stream(roles.split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList())
+                : Collections.emptyList();
+
+        return new UsernamePasswordAuthenticationToken(username, null, authorities);
+    }
+
+
+    private Claims parseClaims(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 }
