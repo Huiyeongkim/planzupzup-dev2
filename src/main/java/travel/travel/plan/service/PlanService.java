@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 import travel.travel.member.domain.Member;
 import travel.travel.member.repository.MemberRepository;
@@ -20,7 +19,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,6 +69,11 @@ public class PlanService{
         Plan existingPlan = planRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
         existingPlan.updatePlan(planUpdateReqDto.toEntity(member));
+
+        if (!existingPlan.getMember().getId().equals(member.getId())) {
+            throw new SecurityException("수정 권한이 없습니다.");
+        }
+
         Plan savedPlan = planRepository.save(existingPlan);
 
         return savedPlan.fromEntity();
@@ -84,6 +87,11 @@ public class PlanService{
 
         Plan existingPlan = planRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
+
+        if (!existingPlan.getMember().getId().equals(member.getId())) {
+            throw new SecurityException("삭제 권한이 없습니다.");
+        }
+
         planRepository.delete(existingPlan);
         return existingPlan.fromEntity();
     }
