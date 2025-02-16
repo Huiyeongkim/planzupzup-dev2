@@ -3,6 +3,7 @@ package travel.travel.plan.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import travel.travel.member.domain.Member;
 import travel.travel.member.repository.MemberRepository;
@@ -29,7 +30,9 @@ public class LikeService {
         Plan existingPlan = planRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
 
-        Member member = null;
+        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = memberRepository.findById(Long.valueOf(memberId))
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
         String likeUserKey = LIKE_USERS_KEY + postId;
         String likeCountKey = LIKE_COUNT_KEY + postId;

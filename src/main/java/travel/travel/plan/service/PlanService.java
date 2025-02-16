@@ -3,8 +3,11 @@ package travel.travel.plan.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 import travel.travel.member.domain.Member;
+import travel.travel.member.repository.MemberRepository;
 import travel.travel.plan.domain.Destination;
 import travel.travel.plan.dto.PlanCreateReqDto;
 import travel.travel.plan.domain.Plan;
@@ -17,6 +20,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,9 +30,12 @@ import java.util.stream.Collectors;
 public class PlanService{
     private final PlanRepository planRepository;
     private final DestinationRepository destinationRepository;
+    private final MemberRepository memberRepository;
 
     public PlanResDto planCreate(@Valid PlanCreateReqDto planCreateReqDto) {
-        Member member = null;
+        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = memberRepository.findById(Long.valueOf(memberId))
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
         Destination destination = destinationRepository.findByDestinationName(planCreateReqDto.getDestinationName())
                 .orElseThrow(()->new EntityNotFoundException("존재하지 않는 장소입니다."));
@@ -43,8 +50,6 @@ public class PlanService{
 
 
     public PlanResDto planRead(Long postId) {
-        Member member = null;
-
         Plan existingPlan = planRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
 
@@ -52,8 +57,6 @@ public class PlanService{
     }
 
     public List<PlanResDto> planReadList() {
-        Member member = null;
-
         List<PlanResDto> plans = planRepository.findAll().stream()
                 .map(Plan::fromEntity)
                 .collect(Collectors.toList());
@@ -61,7 +64,9 @@ public class PlanService{
     }
 
     public PlanResDto planUpdate(Long postId, @Valid PlanUpdateReqDto planUpdateReqDto) {
-        Member member = null;
+        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = memberRepository.findById(Long.valueOf(memberId))
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
         Plan existingPlan = planRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
@@ -73,7 +78,9 @@ public class PlanService{
     }
 
     public PlanResDto planDelete(Long postId) {
-        Member member = null;
+        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = memberRepository.findById(Long.valueOf(memberId))
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
         Plan existingPlan = planRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));

@@ -75,7 +75,7 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         Claims claims = parseClaims(token);
-        String username = claims.getSubject();
+        String memberId = claims.getSubject();
 
         String roles = claims.get("roles", String.class);
         Collection<GrantedAuthority> authorities = (roles != null)
@@ -84,7 +84,7 @@ public class JwtTokenProvider {
                 .collect(Collectors.toList())
                 : Collections.emptyList();
 
-        return new UsernamePasswordAuthenticationToken(username, null, authorities);
+        return new UsernamePasswordAuthenticationToken(memberId, null, authorities);
     }
 
 
