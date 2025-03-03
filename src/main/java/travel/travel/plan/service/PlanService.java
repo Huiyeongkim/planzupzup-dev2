@@ -1,5 +1,8 @@
 package travel.travel.plan.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,9 +18,7 @@ import travel.travel.plan.dto.PlanUpdateReqDto;
 import travel.travel.plan.repository.DestinationRepository;
 import travel.travel.plan.repository.PlanRepository;
 
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,10 +1,10 @@
 package travel.travel.member.domain;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import travel.travel.common.domain.BaseEntity;
 
-import javax.persistence.*;
 
 @Getter
 @Entity
@@ -14,7 +14,7 @@ public class Member extends BaseEntity {
     @Id
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 

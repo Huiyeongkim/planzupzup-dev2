@@ -1,5 +1,7 @@
 package travel.travel.plan.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -10,8 +12,7 @@ import travel.travel.member.repository.MemberRepository;
 import travel.travel.plan.domain.Plan;
 import travel.travel.plan.repository.PlanRepository;
 
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
+
 
 @Service
 @Transactional
