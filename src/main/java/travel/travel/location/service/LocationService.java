@@ -2,7 +2,6 @@ package travel.travel.location.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,7 @@ public class LocationService {
     private final PlanRepository planRepository;
     private final ImageService imageService;
 
-    public LocationResDto LocationCreate(@Valid LocationCreateReqDto locationCreateReqDto, MultipartFile file) throws IOException {
+    public LocationResDto LocationCreate(LocationCreateReqDto locationCreateReqDto, MultipartFile file) throws IOException {
         Plan plan = planRepository.findById(locationCreateReqDto.getPlanId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 계획입니다."));
         ImageResDto imageResDto = imageService.uploadFile(file);
@@ -74,7 +73,7 @@ public class LocationService {
         return locations;
     }
 
-    public List<LocationResDto> LocationUpdate(@Valid List<LocationUpdateReqDto> locationUpdateReqDtos, Long planId, LocalDate day) {
+    public List<LocationResDto> LocationUpdate(List<LocationUpdateReqDto> locationUpdateReqDtos, Long planId, LocalDate day) {
         Plan plan =  planRepository.findById(planId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 계획입니다."));
         List<LocationResDto> dtos = new ArrayList<>();

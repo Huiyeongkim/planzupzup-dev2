@@ -2,7 +2,6 @@ package travel.travel.plan.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +30,7 @@ public class PlanService{
     private final DestinationRepository destinationRepository;
     private final MemberRepository memberRepository;
 
-    public PlanResDto planCreate(@Valid PlanCreateReqDto planCreateReqDto) {
+    public PlanResDto planCreate(PlanCreateReqDto planCreateReqDto) {
         String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Member member = memberRepository.findById(Long.valueOf(memberId))
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
@@ -62,7 +61,7 @@ public class PlanService{
         return plans;
     }
 
-    public PlanResDto planUpdate(Long postId, @Valid PlanUpdateReqDto planUpdateReqDto) {
+    public PlanResDto planUpdate(Long postId, PlanUpdateReqDto planUpdateReqDto) {
         String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Member member = memberRepository.findById(Long.valueOf(memberId))
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));

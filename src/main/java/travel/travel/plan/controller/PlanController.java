@@ -1,5 +1,6 @@
 package travel.travel.plan.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class PlanController {
     private final PlanService planService;
 
     @PostMapping
-    public ResponseEntity<CommonResDto> planCreate(@RequestBody PlanCreateReqDto planCreateReqDto) {
+    public ResponseEntity<CommonResDto> planCreate(@Valid @RequestBody PlanCreateReqDto planCreateReqDto) {
         PlanResDto dto = planService.planCreate(planCreateReqDto);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.CREATED, "계획생성이 성공적으로 되었습니다.", dto), HttpStatus.CREATED);
     }
@@ -40,7 +41,7 @@ public class PlanController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<CommonResDto> planUpdate(@PathVariable Long postId,@RequestBody PlanUpdateReqDto planUpdateReqDto) {
+    public ResponseEntity<CommonResDto> planUpdate(@PathVariable Long postId,@Valid @RequestBody PlanUpdateReqDto planUpdateReqDto) {
         PlanResDto dto = planService.planUpdate(postId, planUpdateReqDto);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "계획수정이 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }

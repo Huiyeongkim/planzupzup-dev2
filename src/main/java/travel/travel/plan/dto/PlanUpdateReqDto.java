@@ -1,5 +1,6 @@
 package travel.travel.plan.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class PlanUpdateReqDto {
+
+    @NotEmpty(message = "title은 필수입니다.")
     private String title;
     private String content;
 

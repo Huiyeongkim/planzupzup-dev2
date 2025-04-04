@@ -1,5 +1,6 @@
 package travel.travel.location.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,7 +27,7 @@ public class LocationController {
 
     @PostMapping
     public ResponseEntity<CommonResDto> LocationCreate(
-            @RequestPart LocationCreateReqDto locationCreateReqDto,
+            @Valid @RequestPart LocationCreateReqDto locationCreateReqDto,
             @RequestPart(required = false) MultipartFile file) throws IOException {
         LocationResDto dto = locationService.LocationCreate(locationCreateReqDto, file);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.CREATED, "지역저장이 성공적으로 되었습니다.", dto), HttpStatus.CREATED);
@@ -45,7 +46,7 @@ public class LocationController {
     }
 
     @PutMapping("/{planId}/{day}")
-    public ResponseEntity<CommonResDto> LocationUpdate(@RequestBody List<LocationUpdateReqDto> locationUpdateReqDtos, @PathVariable Long planId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day) {
+    public ResponseEntity<CommonResDto> LocationUpdate(@RequestBody List<@Valid LocationUpdateReqDto> locationUpdateReqDtos, @PathVariable Long planId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day) {
         List<LocationResDto> dto = locationService.LocationUpdate(locationUpdateReqDtos, planId, day);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역수정이 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }

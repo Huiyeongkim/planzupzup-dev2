@@ -2,6 +2,7 @@ package travel.travel.location.dto;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 @Builder
 public class LocationCreateReqDto {
 
+    @NotEmpty(message = "locationName는 필수입니다.")
     private String locationName;
 
     private double latitude;
