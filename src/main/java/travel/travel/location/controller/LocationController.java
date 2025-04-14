@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/location")
+@RequestMapping("/api/location")
 public class LocationController {
     private final LocationService locationService;
 
