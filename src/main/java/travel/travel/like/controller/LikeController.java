@@ -1,4 +1,4 @@
-package travel.travel.plan.controller;
+package travel.travel.like.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,8 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import travel.travel.common.dto.CommonResDto;
-import travel.travel.plan.service.LikeService;
-
+import travel.travel.like.service.LikeService;
 
 @RestController
 @RequiredArgsConstructor

@@ -1,15 +1,10 @@
-package travel.travel.plan.service;
+package travel.travel.like.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-// import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import travel.travel.member.domain.Member;
 import travel.travel.member.repository.MemberRepository;
-import travel.travel.plan.domain.Plan;
 import travel.travel.plan.repository.PlanRepository;
 
 
@@ -19,7 +14,6 @@ import travel.travel.plan.repository.PlanRepository;
 @RequiredArgsConstructor
 @Slf4j
 public class LikeService {
-   //  private final RedisTemplate<String, Object> redisTemplate;
 
     private final PlanRepository planRepository;
     private final MemberRepository memberRepository;
