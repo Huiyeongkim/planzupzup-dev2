@@ -3,10 +3,13 @@ package travel.travel.plan.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import travel.travel.common.domain.BaseEntity;
+import travel.travel.like.domain.Like;
 import travel.travel.member.domain.Member;
 import travel.travel.plan.dto.PlanResDto;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -36,6 +39,9 @@ public class Plan extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "destination_id")
     private Destination destination;
+
+    @OneToMany(mappedBy = "plan")
+    private List<Like> likes = new ArrayList<>();
 
     public PlanResDto fromEntity() {
         return PlanResDto.builder()
