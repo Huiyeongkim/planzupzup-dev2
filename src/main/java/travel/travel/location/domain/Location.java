@@ -32,7 +32,7 @@ public class Location {
 
     private String address;
 
-    private LocalDate day;
+    private Integer day;
     private Integer scheduleOrder;
 
     @Enumerated(EnumType.STRING)
@@ -47,6 +47,7 @@ public class Location {
     private Image image;
 
     public LocationResDto fromEntity() {
+        LocalDate startDate = plan.getStartDate();
         ImageResDto imageResDto = ImageResDto.builder()
                 .imageId(image.getImageId())
                 .imageUrl(image.getImageUrl())
@@ -58,7 +59,7 @@ public class Location {
                 .latitude(this.latitude)
                 .longitude(this.longitude)
                 .address(this.address)
-                .day(this.day)
+                .day(startDate.plusDays(this.day-1))
                 .scheduleOrder(this.scheduleOrder)
                 .category(this.category)
                 .image(imageResDto)

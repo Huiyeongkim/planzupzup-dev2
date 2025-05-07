@@ -3,7 +3,6 @@ package travel.travel.location.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,6 @@ import travel.travel.location.dto.LocationUpdateReqDto;
 import travel.travel.location.service.LocationService;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -40,13 +38,13 @@ public class LocationController {
     }
 
     @GetMapping("/{planId}/{day}")
-    public ResponseEntity<CommonResDto> LocationReadDayList(@PathVariable Long planId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day) {
+    public ResponseEntity<CommonResDto> LocationReadDayList(@PathVariable Long planId, @PathVariable Integer day) {
         List<LocationResDto> dto = locationService.LocationReadDayList(planId, day);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "날짜별 지역목록조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
     @PutMapping("/{planId}/{day}")
-    public ResponseEntity<CommonResDto> LocationUpdate(@RequestBody List<@Valid LocationUpdateReqDto> locationUpdateReqDtos, @PathVariable Long planId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day) {
+    public ResponseEntity<CommonResDto> LocationUpdate(@RequestBody List<@Valid LocationUpdateReqDto> locationUpdateReqDtos, @PathVariable Long planId, @PathVariable Integer day) {
         List<LocationResDto> dto = locationService.LocationUpdate(locationUpdateReqDtos, planId, day);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역수정이 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
