@@ -27,9 +27,7 @@ public class LocationCreateReqDto {
     private double longitude;
 
     private String address;
-
-    private LocalDate day;
-   /* private Integer scheduleOrder;*/
+    private Integer day;
 
     @Enumerated(EnumType.STRING)
     private Category category;
