@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 import travel.travel.common.service.JwtTokenProvider;
 
 import java.io.IOException;
@@ -39,18 +40,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String accessToken = jwtTokenProvider.generateAccessToken(id);
         ResponseCookie accessTokenCookie = jwtTokenProvider.generateAccessTokenCookie(accessToken);
 
-        String refreshToken = jwtTokenProvider.generateRefreshToken();
-        log.info("refreshToken = {}", refreshToken);
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
 
-        Map<String, String> responseData = new HashMap<>();
-        responseData.put("accessToken", accessToken);
-        responseData.put("refreshToken", refreshToken);
+        String redirectUrl = UriComponentsBuilder
+                .fromUriString("http://localhost:3000/auth")
+                .build()
+                .toUriString();
 
-        response.getWriter().write(objectMapper.writeValueAsString(responseData));
+        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 
 }
