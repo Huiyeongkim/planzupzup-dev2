@@ -57,7 +57,8 @@ public class JwtTokenProvider {
         return ResponseCookie.from("accessToken", accessToken)
                 .path("/")
                 .httpOnly(true)
-                .sameSite("Lax")
+                .sameSite("None")
+                .secure(false)
                 .build();
     }
 
