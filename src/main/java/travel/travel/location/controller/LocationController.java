@@ -32,11 +32,11 @@ public class LocationController {
         return new ResponseEntity<>(new CommonResDto(HttpStatus.CREATED, "지역저장이 성공적으로 되었습니다.", dto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{planId}")
-    public ResponseEntity<CommonResDto> LocationReadList(@PathVariable Long planId) {
-        List<LocationResDto> dto = locationService.LocationReadList(planId);
-        return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역목록조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
-    }
+//    @GetMapping("/{planId}")
+//    public ResponseEntity<CommonResDto> LocationReadList(@PathVariable Long planId) {
+//        List<LocationResDto> dto = locationService.LocationReadList(planId);
+//        return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역목록조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
+//    }
 
     @GetMapping("/{planId}/{day}")
     public ResponseEntity<CommonResDto> LocationReadDayList(@PathVariable Long planId, @PathVariable Integer day) {
