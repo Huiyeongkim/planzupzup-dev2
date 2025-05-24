@@ -44,6 +44,12 @@ public class LocationController {
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "날짜별 지역목록조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
+    @GetMapping("/{locationId}")
+    public ResponseEntity<CommonResDto> LocationReadDayList(@PathVariable Long locationId) {
+        LocationResDto dto = locationService.LocationRead(locationId);
+        return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역상세조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
+    }
+
     @PutMapping("/{locationId}")
     public ResponseEntity<CommonResDto> LocationUpdate(
             @PathVariable Long locationId,
