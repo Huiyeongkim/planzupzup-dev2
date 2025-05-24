@@ -38,7 +38,7 @@ public class LocationService {
 
     public LocationResDto LocationCreate(LocationCreateReqDto locationCreateReqDto, List<MultipartFile> files) throws IOException {
         Plan plan = planRepository.findById(locationCreateReqDto.getPlanId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 계획입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
 
         long total = ChronoUnit.DAYS.between(plan.getStartDate(), plan.getEndDate()) + 1;
         if (locationCreateReqDto.getDay() < 1 || locationCreateReqDto.getDay() > total) {
@@ -66,7 +66,7 @@ public class LocationService {
 
     public List<LocationResDto> LocationReadList(Long planId) {
         Plan plan =  planRepository.findById(planId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 계획입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
         return locationRepository.findByPlan(plan).stream()
                 .map(Location::fromEntity)
                 .collect(Collectors.toList());
@@ -74,10 +74,17 @@ public class LocationService {
 
     public List<LocationResDto> LocationReadDayList(Long planId, Integer day) {
         Plan plan =  planRepository.findById(planId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 계획입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
         return locationRepository.findByPlanAndDayOrderByScheduleOrderAsc(plan, day).stream()
                 .map(Location::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public LocationResDto LocationRead(Long locationId) {
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지역입니다."));
+
+        return location.fromEntity();
     }
 
     public LocationResDto LocationUpdate(Long locationId, LocationUpdateReqDto locationUpdateReqDto, List<MultipartFile> files) throws IOException {
@@ -101,7 +108,7 @@ public class LocationService {
 
     public List<LocationResDto> updateScheduleOrder(Long planId, List<LocationOrderUpdateReqDto> locationOrderUpdateReqDtos) {
         Plan plan =  planRepository.findById(planId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 계획입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
 
         Map<Integer, List<LocationOrderUpdateReqDto>> groupedByDay = locationOrderUpdateReqDtos.stream()
                 .collect(Collectors.groupingBy(LocationOrderUpdateReqDto::getDay));
@@ -150,7 +157,7 @@ public class LocationService {
         Integer day = existingLocation.getDay();
         locationRepository.delete(existingLocation);
         Plan plan =  planRepository.findById(existingLocation.getPlan().getPlanId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 계획입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
 
         autoScheduleOrder(locationRepository.findByPlanAndDayOrderByScheduleOrderAsc(plan, day));
 
