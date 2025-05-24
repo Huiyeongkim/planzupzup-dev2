@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LocationCreateReqDto {
+public class LocationUpdateReqDto {
 
     @NotEmpty(message = "locationName는 필수입니다.")
     private String locationName;
@@ -30,21 +30,4 @@ public class LocationCreateReqDto {
     private String placeId;
     private String googleImageUrl;
     private String types;
-
-    public Location toEntity(Plan plan, List<Image> images, Integer newOrderNumber) {
-        return Location.builder()
-                .locationName(this.locationName)
-                .latitude(this.latitude)
-                .longitude(this.longitude)
-                .address(this.address)
-                .day(this.day)
-                .description(this.description)
-                .placeId(this.placeId)
-                .scheduleOrder(newOrderNumber)
-                .plan(plan)
-                .googleImageUrl(this.googleImageUrl)
-                .types(this.types)
-                .images(images)
-                .build();
-    }
 }

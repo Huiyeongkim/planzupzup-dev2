@@ -36,6 +36,13 @@ public class GlobalExceptionHandler {
                 HttpStatus.FORBIDDEN
         );
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<CommonErrorDto> runtimeExceptionHandler (RuntimeException e) {
+        e.printStackTrace();
+        return new ResponseEntity<>(new CommonErrorDto(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonErrorDto> exceptionHandler (Exception e) {
         e.printStackTrace();

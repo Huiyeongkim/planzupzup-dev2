@@ -8,21 +8,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import travel.travel.image.domain.Image;
 import travel.travel.image.dto.ImageResDto;
+import travel.travel.image.repository.ImageRepository;
 import travel.travel.image.service.ImageService;
 import travel.travel.location.domain.Location;
 import travel.travel.location.dto.LocationCreateReqDto;
+import travel.travel.location.dto.LocationOrderUpdateReqDto;
 import travel.travel.location.dto.LocationResDto;
 import travel.travel.location.dto.LocationUpdateReqDto;
 import travel.travel.location.repository.LocationRepository;
 import travel.travel.plan.domain.Plan;
 import travel.travel.plan.repository.PlanRepository;
 
-
-
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,8 +34,9 @@ public class LocationService {
     private final LocationRepository locationRepository;
     private final PlanRepository planRepository;
     private final ImageService imageService;
+    private final ImageRepository imageRepository;
 
-    public LocationResDto LocationCreate(LocationCreateReqDto locationCreateReqDto, MultipartFile file) throws IOException {
+    public LocationResDto LocationCreate(LocationCreateReqDto locationCreateReqDto, List<MultipartFile> files) throws IOException {
         Plan plan = planRepository.findById(locationCreateReqDto.getPlanId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 계획입니다."));
 
@@ -43,11 +45,13 @@ public class LocationService {
             throw new IllegalArgumentException("요청하신 day 값이 계획 범위를 벗어났습니다.");
         }
 
-        ImageResDto imageResDto = imageService.uploadFile(file);
-        Image image =  Image.builder()
-                .imageId(imageResDto.getImageId())
-                .imageUrl(imageResDto.getImageUrl())
-                .build();
+        List<ImageResDto> imageResDtos = imageService.uploadFiles(files);
+        List<Image> image =  imageResDtos.stream()
+                .map(img -> Image.builder()
+                        .imageId(img.getImageId())
+                        .imageUrl(img.getImageUrl())
+                        .build())
+                .toList();
 
         Location location = locationRepository.findTopByPlanAndDayOrderByScheduleOrderDesc(plan, locationCreateReqDto.getDay());
         Integer lastOrderNumber = 0;
@@ -76,30 +80,68 @@ public class LocationService {
                 .collect(Collectors.toList());
     }
 
-    public List<LocationResDto> LocationUpdate(List<LocationUpdateReqDto> locationUpdateReqDtos, Long planId, Integer day) {
+    public LocationResDto LocationUpdate(Long locationId, LocationUpdateReqDto locationUpdateReqDto, List<MultipartFile> files) throws IOException {
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 지역이 존재하지 않습니다."));
+
+        imageRepository.deleteAll(location.getImages());
+
+        List<ImageResDto> imageResDtos = imageService.uploadFiles(files);
+        List<Image> image =  imageResDtos.stream()
+                .map(img -> Image.builder()
+                        .imageId(img.getImageId())
+                        .imageUrl(img.getImageUrl())
+                        .build())
+                .toList();
+
+        location.updateInfo(locationUpdateReqDto, image);
+        return location.fromEntity();
+    }
+
+
+    public List<LocationResDto> updateScheduleOrder(Long planId, List<LocationOrderUpdateReqDto> locationOrderUpdateReqDtos) {
         Plan plan =  planRepository.findById(planId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 계획입니다."));
-        List<LocationResDto> dtos = new ArrayList<>();
 
-        for (LocationUpdateReqDto locationUpdateReqDto : locationUpdateReqDtos) {
-            Location existingLocation =  locationRepository.findById(locationUpdateReqDto.getLocationId()).orElseThrow();
-            if (!existingLocation.getPlan().equals(plan) || !existingLocation.getDay().equals(day)) {
-                throw new IllegalArgumentException();
+        Map<Integer, List<LocationOrderUpdateReqDto>> groupedByDay = locationOrderUpdateReqDtos.stream()
+                .collect(Collectors.groupingBy(LocationOrderUpdateReqDto::getDay));
+
+        List<LocationResDto> result = new ArrayList<>();
+
+        for (Map.Entry<Integer, List<LocationOrderUpdateReqDto>> entry : groupedByDay.entrySet()) {
+            Integer day = entry.getKey();
+
+            List<LocationResDto> dayResult = new ArrayList<>();
+
+            for (LocationOrderUpdateReqDto dto :  entry.getValue()) {
+                Location existingLocation =  locationRepository.findById(dto.getLocationId())
+                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지역입니다."));
+
+                if (!existingLocation.getPlan().equals(plan)) {
+                    throw new IllegalArgumentException("요청 정보와 일치하지 않는 지역입니다.");
+                }
+                if (!existingLocation.getDay().equals(day)) {
+                    existingLocation.updateDay(day);
+                }
+
+                if (!existingLocation.getScheduleOrder().equals(dto.getScheduleOrder())) {
+                    existingLocation.updateScheduleOrder(dto.getScheduleOrder());
+                }
+
+                dayResult.add(existingLocation.fromEntity());
             }
-            existingLocation.updateLocation(locationUpdateReqDto.toEntity());
-            Location savedLocation = locationRepository.save(existingLocation);
-            dtos.add(savedLocation.fromEntity());
+            checkForDuplicateScheduleOrder(dayResult);
+            List<Location> reorderLocation = locationRepository.findByPlanAndDayOrderByScheduleOrderAsc(plan, day);
+            autoScheduleOrder(reorderLocation);
+
+            List<LocationResDto> refreshed = reorderLocation.stream()
+                    .map(Location::fromEntity)
+                    .toList();
+
+            result.addAll(refreshed);
         }
 
-        checkForDuplicateScheduleOrder(dtos);
-        List<Location> locations = locationRepository.findByPlanAndDayOrderByScheduleOrderAsc(plan, day);
-        autoScheduleOrder(locations);
-
-        dtos = locationRepository.findByPlanAndDayOrderByScheduleOrderAsc(plan, day).stream()
-                .map(Location::fromEntity)
-                .collect(Collectors.toList());
-
-        return dtos;
+        return result;
     }
 
     public LocationResDto locationDelete(Long locationId) {
@@ -110,8 +152,7 @@ public class LocationService {
         Plan plan =  planRepository.findById(existingLocation.getPlan().getPlanId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 계획입니다."));
 
-        List<Location> locations = locationRepository.findByPlanAndDayOrderByScheduleOrderAsc(plan, day);
-        autoScheduleOrder(locations);
+        autoScheduleOrder(locationRepository.findByPlanAndDayOrderByScheduleOrderAsc(plan, day));
 
         return existingLocation.fromEntity();
     }
@@ -129,7 +170,7 @@ public class LocationService {
     private void autoScheduleOrder(List<Location> locations) {
         int newOrderNumber = 1;
         for (Location location : locations) {
-            location.updateLocation(Location.builder().scheduleOrder(newOrderNumber++).build());
+            location.updateScheduleOrder(newOrderNumber++);
             locationRepository.save(location);
         }
     }

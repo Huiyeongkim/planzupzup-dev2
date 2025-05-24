@@ -8,9 +8,12 @@ import lombok.NoArgsConstructor;
 import travel.travel.image.domain.Image;
 import travel.travel.image.dto.ImageResDto;
 import travel.travel.location.dto.LocationResDto;
+import travel.travel.location.dto.LocationUpdateReqDto;
 import travel.travel.plan.domain.Plan;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -33,25 +36,28 @@ public class Location {
     private String address;
 
     private Integer day;
+    private String description;
     private Integer scheduleOrder;
 
-    @Enumerated(EnumType.STRING)
-    private Category category;
+    private String placeId;
+    private String googleImageUrl;
+    private String types;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id")
     private Plan plan;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
-    private Image image;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Image> images = new ArrayList<>();
 
     public LocationResDto fromEntity() {
         LocalDate startDate = plan.getStartDate();
-        ImageResDto imageResDto = ImageResDto.builder()
-                .imageId(image.getImageId())
-                .imageUrl(image.getImageUrl())
-                .build();
+        List<ImageResDto> imageResDtos = images.stream()
+                .map(img -> ImageResDto.builder()
+                        .imageId(img.getImageId())
+                        .imageUrl(img.getImageUrl())
+                        .build())
+                .toList();
 
         return LocationResDto.builder()
                 .locationId(this.locationId)
@@ -60,13 +66,33 @@ public class Location {
                 .longitude(this.longitude)
                 .address(this.address)
                 .day(startDate.plusDays(this.day-1))
+                .description(this.description)
                 .scheduleOrder(this.scheduleOrder)
-                .category(this.category)
-                .image(imageResDto)
+                .placeId(this.placeId)
+                .googleImageUrl(this.googleImageUrl)
+                .types(this.types)
+                .planId(this.plan.getPlanId())
+                .images(imageResDtos)
                 .build();
     }
 
-    public void updateLocation(Location location) {
-        this.scheduleOrder = location.getScheduleOrder();
+    public void updateInfo(LocationUpdateReqDto locationUpdateReqDto, List<Image> image) {
+        this.locationName = locationUpdateReqDto.getLocationName();
+        this.latitude = locationUpdateReqDto.getLatitude();
+        this.longitude = locationUpdateReqDto.getLongitude();
+        this.address = locationUpdateReqDto.getAddress();
+        this.description = locationUpdateReqDto.getDescription();
+        this.googleImageUrl = locationUpdateReqDto.getGoogleImageUrl();
+        this.types = locationUpdateReqDto.getTypes();
+        this.placeId = locationUpdateReqDto.getPlaceId();
+        this.images = image;
+    }
+
+    public void updateScheduleOrder(int scheduleOrder) {
+        this.scheduleOrder = scheduleOrder;
+    }
+
+    public void updateDay(int day) {
+        this.day = day;
     }
 }
