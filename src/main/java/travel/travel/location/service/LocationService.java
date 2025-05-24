@@ -155,7 +155,9 @@ public class LocationService {
         Location existingLocation = locationRepository.findById(locationId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 위치입니다."));
         Integer day = existingLocation.getDay();
+        imageRepository.deleteAll(existingLocation.getImages());
         locationRepository.delete(existingLocation);
+
         Plan plan =  planRepository.findById(existingLocation.getPlan().getPlanId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
 
