@@ -1,23 +1,33 @@
 package travel.travel.location.dto;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import travel.travel.image.domain.Image;
 import travel.travel.location.domain.Location;
+import travel.travel.plan.domain.Plan;
 
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Builder
 public class LocationUpdateReqDto {
-    @NotNull(message = "locationId는 필수입니다.")
-    private Long locationId;
-    private Integer scheduleOrder;
 
-    public Location toEntity() {
-        return Location.builder()
-                .scheduleOrder(this.scheduleOrder)
-                .build();
-    }
+    @NotEmpty(message = "locationName는 필수입니다.")
+    private String locationName;
+
+    private double latitude;
+    private double longitude;
+    private String address;
+    private Integer day;
+    private String description;
+    private Long planId;
+
+    private String placeId;
+    private String googleImageUrl;
+    private String types;
 }

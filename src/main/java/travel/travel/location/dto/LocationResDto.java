@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import travel.travel.image.dto.ImageResDto;
-import travel.travel.location.domain.Category;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,11 +16,17 @@ import java.time.LocalDate;
 public class LocationResDto {
     private Long locationId;
     private String locationName;
+
     private double latitude;
     private double longitude;
     private String address;
     private LocalDate day;
+    private String description;
+    private Long planId;
     private Integer scheduleOrder;
-    private Category category;
-    private ImageResDto image;
+
+    private String placeId;
+    private String googleImageUrl;
+    private String types;
+    private List<ImageResDto> images;
 }

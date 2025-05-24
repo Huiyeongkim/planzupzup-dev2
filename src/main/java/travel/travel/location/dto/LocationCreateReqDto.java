@@ -1,18 +1,15 @@
 package travel.travel.location.dto;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import travel.travel.image.domain.Image;
-import travel.travel.location.domain.Category;
 import travel.travel.location.domain.Location;
 import travel.travel.plan.domain.Plan;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,26 +22,29 @@ public class LocationCreateReqDto {
 
     private double latitude;
     private double longitude;
-
     private String address;
     private Integer day;
-
-    @Enumerated(EnumType.STRING)
-    private Category category;
-
+    private String description;
     private Long planId;
 
-    public Location toEntity(Plan plan, Image image,Integer newOrderNumber) {
+    private String placeId;
+    private String googleImageUrl;
+    private String types;
+
+    public Location toEntity(Plan plan, List<Image> images, Integer newOrderNumber) {
         return Location.builder()
                 .locationName(this.locationName)
                 .latitude(this.latitude)
                 .longitude(this.longitude)
                 .address(this.address)
                 .day(this.day)
+                .description(this.description)
+                .placeId(this.placeId)
                 .scheduleOrder(newOrderNumber)
-                .category(this.category)
                 .plan(plan)
-                .image(image)
+                .googleImageUrl(this.googleImageUrl)
+                .types(this.types)
+                .images(images)
                 .build();
     }
 }

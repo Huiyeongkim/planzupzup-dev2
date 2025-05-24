@@ -13,6 +13,7 @@ import travel.travel.image.dto.ImageResDto;
 import travel.travel.image.repository.ImageRepository;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -26,26 +27,40 @@ public class ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public ImageResDto uploadFile(MultipartFile multipartFile) throws IOException {
-        String originalFilename = multipartFile.getOriginalFilename();
-        String uniqueFileName = UUID.randomUUID().toString() + "-" + originalFilename;
-
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucket)
-                .key(uniqueFileName)
-                .contentType(multipartFile.getContentType())
-                .contentLength(multipartFile.getSize())
-                .build();
-
-        try {
-            s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(multipartFile.getInputStream(), multipartFile.getSize()));
-        } catch (Exception e) {
-            throw new IOException("S3 업로드 실패: " + e.getMessage(), e);
+    public List<ImageResDto> uploadFiles(List<MultipartFile> multipartFiles) throws IOException {
+        if (multipartFiles == null || multipartFiles.isEmpty()) {
+            throw new IllegalArgumentException("업로드할 파일이 없습니다.");
         }
 
-        String url = s3Client.utilities().getUrl(builder -> builder.bucket(bucket).key(uniqueFileName)).toString();
-        Image image = Image.builder().imageUrl(url).build();
-        imageRepository.save(image);
-        return image.fromEntity();
+        return multipartFiles.stream()
+                .map(file -> {
+                    try {
+                        String originalFilename = file.getOriginalFilename();
+                        String uniqueFileName = UUID.randomUUID().toString() + "-" + originalFilename;
+
+                        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                                .bucket(bucket)
+                                .key(uniqueFileName)
+                                .contentType(file.getContentType())
+                                .contentLength(file.getSize())
+                                .build();
+
+                        s3Client.putObject(putObjectRequest,
+                                RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+
+                        String url = s3Client.utilities().getUrl(builder ->
+                                builder.bucket(bucket).key(uniqueFileName)).toString();
+
+                        Image image = Image.builder().imageUrl(url).build();
+                        imageRepository.save(image);
+
+                        return image.fromEntity();
+
+                    } catch (IOException e) {
+                        throw new RuntimeException("S3 업로드 실패");
+                    }
+                })
+                .toList();
     }
 }
+

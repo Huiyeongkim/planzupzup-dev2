@@ -15,7 +15,8 @@ import travel.travel.plan.domain.Plan;
 @Builder
 public class Like {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likeId;
 
     @ManyToOne
