@@ -17,6 +17,7 @@ import travel.travel.plan.domain.Destination;
 import travel.travel.plan.dto.PlanCreateReqDto;
 import travel.travel.plan.domain.Plan;
 import travel.travel.plan.dto.PlanResDto;
+import travel.travel.plan.dto.PlanThumbResDto;
 import travel.travel.plan.dto.PlanUpdateReqDto;
 import travel.travel.plan.repository.DestinationRepository;
 import travel.travel.plan.repository.PlanRepository;
@@ -79,11 +80,10 @@ public class PlanService{
         return existingPlan.fromEntityByDay(filteredLocations);
     }
 
-    public List<PlanResDto> planReadList() {
-        List<PlanResDto> plans = planRepository.findAll().stream()
-                .map(Plan::fromEntity)
+    public List<PlanThumbResDto> planReadList() {
+        return planRepository.findAll().stream()
+                .map(Plan::fromThumbEntity)
                 .collect(Collectors.toList());
-        return plans;
     }
 
     public PlanResDto planUpdate(Long planId, PlanUpdateReqDto planUpdateReqDto) {
@@ -115,6 +115,10 @@ public class PlanService{
 
         Plan existingPlan =  planRepository.findById(planId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
+
+        if (!existingPlan.getMember().getId().equals(member.getId())) {
+            throw new SecurityException("수정 권한이 없습니다.");
+        }
 
         Map<Integer, List<LocationOrderUpdateReqDto>> groupedByDay = locationOrderUpdateReqDtos.stream()
                 .collect(Collectors.groupingBy(LocationOrderUpdateReqDto::getDay));

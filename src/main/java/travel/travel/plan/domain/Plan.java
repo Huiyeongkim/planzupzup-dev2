@@ -8,6 +8,7 @@ import travel.travel.location.domain.Location;
 import travel.travel.location.dto.LocationThumbResDto;
 import travel.travel.member.domain.Member;
 import travel.travel.plan.dto.PlanResDto;
+import travel.travel.plan.dto.PlanThumbResDto;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -62,6 +63,14 @@ public class Plan extends BaseEntity {
                                 ? this.locations.stream().map(Location::fromThumbEntity).toList()
                                 : new ArrayList<>()
                 )
+                .build();
+    }
+
+    public PlanThumbResDto fromThumbEntity() {
+        return PlanThumbResDto.builder()
+                .planId(this.planId)
+                .title(this.title)
+                .destinationName(destination.getDestinationName())
                 .build();
     }
 

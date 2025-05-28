@@ -10,6 +10,7 @@ import travel.travel.common.dto.CommonResDto;
 import travel.travel.location.dto.LocationOrderUpdateReqDto;
 import travel.travel.plan.dto.PlanCreateReqDto;
 import travel.travel.plan.dto.PlanResDto;
+import travel.travel.plan.dto.PlanThumbResDto;
 import travel.travel.plan.dto.PlanUpdateReqDto;
 import travel.travel.plan.service.PlanService;
 
@@ -44,7 +45,7 @@ public class PlanController {
 
     @GetMapping
     public ResponseEntity<CommonResDto> planReadList() {
-        List<PlanResDto> dto = planService.planReadList();
+        List<PlanThumbResDto> dto = planService.planReadList();
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "계획목록조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
