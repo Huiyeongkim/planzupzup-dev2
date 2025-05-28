@@ -24,25 +24,25 @@ public class LocationController {
     private final LocationService locationService;
 
     @PostMapping
-    public ResponseEntity<CommonResDto> LocationCreate(
+    public ResponseEntity<CommonResDto> locationCreate(
             @Valid @RequestPart LocationCreateReqDto locationCreateReqDto,
             @RequestPart(required = false) List<MultipartFile> files) throws IOException {
-        LocationResDto dto = locationService.LocationCreate(locationCreateReqDto, files);
+        LocationResDto dto = locationService.locationCreate(locationCreateReqDto, files);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.CREATED, "지역저장이 성공적으로 되었습니다.", dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{locationId}")
-    public ResponseEntity<CommonResDto> LocationReadDayList(@PathVariable Long locationId) {
-        LocationResDto dto = locationService.LocationRead(locationId);
+    public ResponseEntity<CommonResDto> locationReadDayList(@PathVariable Long locationId) {
+        LocationResDto dto = locationService.locationRead(locationId);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역상세조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
     @PutMapping("/{locationId}")
-    public ResponseEntity<CommonResDto> LocationUpdate(
+    public ResponseEntity<CommonResDto> locationUpdate(
             @PathVariable Long locationId,
             @Valid @RequestPart LocationUpdateReqDto locationUpdateReqDto,
             @RequestPart(required = false) List<MultipartFile> files) throws IOException {
-        LocationResDto dto = locationService.LocationUpdate(locationId, locationUpdateReqDto, files);
+        LocationResDto dto = locationService.locationUpdate(locationId, locationUpdateReqDto, files);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역변경이 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
