@@ -5,7 +5,6 @@ import lombok.*;
 import travel.travel.common.domain.BaseEntity;
 import travel.travel.like.domain.Like;
 import travel.travel.location.domain.Location;
-import travel.travel.location.dto.LocationResDto;
 import travel.travel.location.dto.LocationThumbResDto;
 import travel.travel.member.domain.Member;
 import travel.travel.plan.dto.PlanResDto;

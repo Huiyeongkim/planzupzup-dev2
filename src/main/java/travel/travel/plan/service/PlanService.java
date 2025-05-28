@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import travel.travel.location.domain.Location;
 import travel.travel.location.dto.LocationOrderUpdateReqDto;
-import travel.travel.location.dto.LocationResDto;
 import travel.travel.location.dto.LocationThumbResDto;
 import travel.travel.location.repository.LocationRepository;
 import travel.travel.location.service.LocationService;

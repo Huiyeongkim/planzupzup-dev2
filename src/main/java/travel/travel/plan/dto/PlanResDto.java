@@ -1,7 +1,6 @@
 package travel.travel.plan.dto;
 
 import lombok.*;
-import travel.travel.location.dto.LocationResDto;
 import travel.travel.location.dto.LocationThumbResDto;
 
 import java.time.LocalDate;
