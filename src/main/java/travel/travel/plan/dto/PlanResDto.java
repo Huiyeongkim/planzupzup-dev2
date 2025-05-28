@@ -1,8 +1,10 @@
 package travel.travel.plan.dto;
 
 import lombok.*;
+import travel.travel.location.dto.LocationThumbResDto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,4 +19,6 @@ public class PlanResDto {
 
     private Long destinationId;
     private String destinationName;
+
+    private List<LocationThumbResDto> locations;
 }

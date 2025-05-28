@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import travel.travel.image.domain.Image;
 import travel.travel.image.dto.ImageResDto;
 import travel.travel.location.dto.LocationResDto;
+import travel.travel.location.dto.LocationThumbResDto;
 import travel.travel.location.dto.LocationUpdateReqDto;
 import travel.travel.plan.domain.Plan;
 
@@ -75,6 +76,24 @@ public class Location {
                 .images(imageResDtos)
                 .build();
     }
+
+    public LocationThumbResDto fromThumbEntity() {
+        LocalDate startDate = plan.getStartDate();
+
+        return LocationThumbResDto.builder()
+                .locationId(this.locationId)
+                .locationName(this.locationName)
+                .latitude(this.latitude)
+                .longitude(this.longitude)
+                .address(this.address)
+                .day(startDate.plusDays(this.day-1))
+                .scheduleOrder(this.scheduleOrder)
+                .placeId(this.placeId)
+                .googleImageUrl(this.googleImageUrl)
+                .types(this.types)
+                .build();
+    }
+
 
     public void updateInfo(LocationUpdateReqDto locationUpdateReqDto, List<Image> image) {
         this.locationName = locationUpdateReqDto.getLocationName();
