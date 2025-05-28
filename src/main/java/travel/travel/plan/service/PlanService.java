@@ -69,8 +69,8 @@ public class PlanService{
     }
 
 
-    public PlanResDto planRead(Long postId) {
-        Plan existingPlan = planRepository.findById(postId)
+    public PlanResDto planRead(Long planId) {
+        Plan existingPlan = planRepository.findById(planId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
 
         List<LocationThumbResDto> filteredLocations = existingPlan.getLocations().stream()
@@ -87,13 +87,13 @@ public class PlanService{
         return plans;
     }
 
-    public PlanResDto planUpdate(Long postId, PlanUpdateReqDto planUpdateReqDto) {
+    public PlanResDto planUpdate(Long planId, PlanUpdateReqDto planUpdateReqDto) {
         //        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String memberId = "1";
         Member member = memberRepository.findById(Long.valueOf(memberId))
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
-        Plan existingPlan = planRepository.findById(postId)
+        Plan existingPlan = planRepository.findById(planId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
         existingPlan.updatePlan(planUpdateReqDto.toEntity(member));
 
@@ -143,13 +143,13 @@ public class PlanService{
         return existingPlan.fromEntity();
     }
 
-    public PlanResDto planDelete(Long postId) {
+    public PlanResDto planDelete(Long planId) {
         //        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String memberId = "1";
         Member member = memberRepository.findById(Long.valueOf(memberId))
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
-        Plan existingPlan = planRepository.findById(postId)
+        Plan existingPlan = planRepository.findById(planId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
 
         if (!existingPlan.getMember().getId().equals(member.getId())) {

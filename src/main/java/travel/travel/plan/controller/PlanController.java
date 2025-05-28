@@ -31,9 +31,9 @@ public class PlanController {
         return new ResponseEntity<>(new CommonResDto(HttpStatus.CREATED, "계획생성이 성공적으로 되었습니다.", dto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<CommonResDto> planRead(@PathVariable Long postId) {
-        PlanResDto dto = planService.planRead(postId);
+    @GetMapping("/{planId}")
+    public ResponseEntity<CommonResDto> planRead(@PathVariable Long planId) {
+        PlanResDto dto = planService.planRead(planId);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "계획상세조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
@@ -59,15 +59,15 @@ public class PlanController {
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역날짜, 순서 변경이 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
-    @PutMapping("/{postId}")
-    public ResponseEntity<CommonResDto> planUpdate(@PathVariable Long postId,@Valid @RequestBody PlanUpdateReqDto planUpdateReqDto) {
-        PlanResDto dto = planService.planUpdate(postId, planUpdateReqDto);
+    @PutMapping("/{planId}")
+    public ResponseEntity<CommonResDto> planUpdate(@PathVariable Long planId,@Valid @RequestBody PlanUpdateReqDto planUpdateReqDto) {
+        PlanResDto dto = planService.planUpdate(planId, planUpdateReqDto);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "계획수정이 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<CommonResDto> planDelete(@PathVariable Long postId) {
-        PlanResDto dto = planService.planDelete(postId);
+    @DeleteMapping("/{planId}")
+    public ResponseEntity<CommonResDto> planDelete(@PathVariable Long planId) {
+        PlanResDto dto = planService.planDelete(planId);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "계획삭제가 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
