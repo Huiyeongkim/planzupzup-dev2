@@ -58,6 +58,11 @@ public class Plan extends BaseEntity {
                 .endDate(this.endDate)
                 .destinationId(destination.getDestinationId())
                 .destinationName(destination.getDestinationName())
+                .locations(
+                        (this.locations != null && !this.locations.isEmpty())
+                                ? this.locations.stream().map(Location::fromThumbEntity).toList()
+                                : new ArrayList<>()
+                )
                 .build();
     }
 

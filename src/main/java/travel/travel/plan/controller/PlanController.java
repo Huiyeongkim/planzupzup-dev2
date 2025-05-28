@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import travel.travel.common.dto.CommonResDto;
+import travel.travel.location.domain.Location;
+import travel.travel.location.dto.LocationOrderUpdateReqDto;
+import travel.travel.plan.domain.Plan;
 import travel.travel.plan.dto.PlanCreateReqDto;
 import travel.travel.plan.dto.PlanResDto;
 import travel.travel.plan.dto.PlanUpdateReqDto;
@@ -45,6 +48,15 @@ public class PlanController {
     public ResponseEntity<CommonResDto> planReadList() {
         List<PlanResDto> dto = planService.planReadList();
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "계획목록조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
+    }
+
+    @PutMapping("/{planId}/order")
+    public ResponseEntity<CommonResDto> updateScheduleOrder(
+            @PathVariable Long planId,
+            @RequestBody List<LocationOrderUpdateReqDto> locationOrderUpdateReqDtos) {
+
+        PlanResDto dto = planService.updateScheduleOrder(planId, locationOrderUpdateReqDtos);
+        return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역날짜, 순서 변경이 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
     @PutMapping("/{postId}")
