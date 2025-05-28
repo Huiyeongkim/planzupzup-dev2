@@ -64,22 +64,6 @@ public class LocationService {
         return savedLocation.fromEntity();
     }
 
-    public List<LocationResDto> LocationReadList(Long planId) {
-        Plan plan =  planRepository.findById(planId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
-        return locationRepository.findByPlan(plan).stream()
-                .map(Location::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    public List<LocationResDto> LocationReadDayList(Long planId, Integer day) {
-        Plan plan =  planRepository.findById(planId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
-        return locationRepository.findByPlanAndDayOrderByScheduleOrderAsc(plan, day).stream()
-                .map(Location::fromEntity)
-                .collect(Collectors.toList());
-    }
-
     public LocationResDto LocationRead(Long locationId) {
         Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 지역입니다."));

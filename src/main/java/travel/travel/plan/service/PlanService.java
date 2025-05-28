@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import travel.travel.location.domain.Location;
+import travel.travel.location.dto.LocationResDto;
+import travel.travel.location.dto.LocationThumbResDto;
 import travel.travel.member.domain.Member;
 import travel.travel.member.repository.MemberRepository;
 import travel.travel.plan.domain.Destination;
@@ -31,7 +34,8 @@ public class PlanService{
     private final MemberRepository memberRepository;
 
     public PlanResDto planCreate(PlanCreateReqDto planCreateReqDto) {
-        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String memberId = "1";
         Member member = memberRepository.findById(Long.valueOf(memberId))
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
@@ -47,11 +51,28 @@ public class PlanService{
     }
 
 
+    public PlanResDto planReadDayList(Long planId, Integer day) {
+        Plan existingPlan = planRepository.findById(planId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
+
+        List<LocationThumbResDto> filteredLocations = existingPlan.getLocations().stream()
+                .filter(location -> location.getDay().equals(day))
+                .map(Location::fromThumbEntity)
+                .toList();
+
+        return existingPlan.fromEntityByDay(filteredLocations);
+    }
+
+
     public PlanResDto planRead(Long postId) {
         Plan existingPlan = planRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
 
-        return existingPlan.fromEntity();
+        List<LocationThumbResDto> filteredLocations = existingPlan.getLocations().stream()
+                .map(Location::fromThumbEntity)
+                .toList();
+
+        return existingPlan.fromEntityByDay(filteredLocations);
     }
 
     public List<PlanResDto> planReadList() {
@@ -62,7 +83,8 @@ public class PlanService{
     }
 
     public PlanResDto planUpdate(Long postId, PlanUpdateReqDto planUpdateReqDto) {
-        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String memberId = "1";
         Member member = memberRepository.findById(Long.valueOf(memberId))
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
@@ -81,7 +103,8 @@ public class PlanService{
     }
 
     public PlanResDto planDelete(Long postId) {
-        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String memberId = "1";
         Member member = memberRepository.findById(Long.valueOf(memberId))
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import travel.travel.common.domain.BaseEntity;
 import travel.travel.like.domain.Like;
+import travel.travel.location.domain.Location;
+import travel.travel.location.dto.LocationResDto;
+import travel.travel.location.dto.LocationThumbResDto;
 import travel.travel.member.domain.Member;
 import travel.travel.plan.dto.PlanResDto;
 
@@ -43,6 +46,9 @@ public class Plan extends BaseEntity {
     @OneToMany(mappedBy = "plan")
     private List<Like> likes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Location> locations = new ArrayList<>();
+
     public PlanResDto fromEntity() {
         return PlanResDto.builder()
                 .planId(this.planId)
@@ -52,6 +58,19 @@ public class Plan extends BaseEntity {
                 .endDate(this.endDate)
                 .destinationId(destination.getDestinationId())
                 .destinationName(destination.getDestinationName())
+                .build();
+    }
+
+    public PlanResDto fromEntityByDay(List<LocationThumbResDto> locations) {
+        return PlanResDto.builder()
+                .planId(this.planId)
+                .title(this.title)
+                .content(this.content)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .destinationId(destination.getDestinationId())
+                .destinationName(destination.getDestinationName())
+                .locations(locations)
                 .build();
     }
 

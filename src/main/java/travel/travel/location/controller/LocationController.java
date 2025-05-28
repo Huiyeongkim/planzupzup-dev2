@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import travel.travel.common.dto.CommonResDto;
 import travel.travel.location.dto.LocationCreateReqDto;
-import travel.travel.location.dto.LocationOrderUpdateReqDto;
 import travel.travel.location.dto.LocationResDto;
 import travel.travel.location.dto.LocationUpdateReqDto;
 import travel.travel.location.service.LocationService;
@@ -32,18 +31,6 @@ public class LocationController {
         return new ResponseEntity<>(new CommonResDto(HttpStatus.CREATED, "지역저장이 성공적으로 되었습니다.", dto), HttpStatus.CREATED);
     }
 
-//    @GetMapping("/{planId}")
-//    public ResponseEntity<CommonResDto> LocationReadList(@PathVariable Long planId) {
-//        List<LocationResDto> dto = locationService.LocationReadList(planId);
-//        return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역목록조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
-//    }
-
-    @GetMapping("/{planId}/{day}")
-    public ResponseEntity<CommonResDto> LocationReadDayList(@PathVariable Long planId, @PathVariable Integer day) {
-        List<LocationResDto> dto = locationService.LocationReadDayList(planId, day);
-        return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "날짜별 지역목록조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
-    }
-
     @GetMapping("/{locationId}")
     public ResponseEntity<CommonResDto> LocationReadDayList(@PathVariable Long locationId) {
         LocationResDto dto = locationService.LocationRead(locationId);
@@ -57,15 +44,6 @@ public class LocationController {
             @RequestPart(required = false) List<MultipartFile> files) throws IOException {
         LocationResDto dto = locationService.LocationUpdate(locationId, locationUpdateReqDto, files);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역변경이 성공적으로 되었습니다.", dto), HttpStatus.OK);
-    }
-
-    @PutMapping("/{planId}/order")
-    public ResponseEntity<CommonResDto> updateScheduleOrder(
-            @PathVariable Long planId,
-            @RequestBody List<LocationOrderUpdateReqDto> locationOrderUpdateReqDtos) {
-
-        List<LocationResDto> dto = locationService.updateScheduleOrder(planId, locationOrderUpdateReqDtos);
-        return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역날짜, 순서 변경이 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{locationId}")
