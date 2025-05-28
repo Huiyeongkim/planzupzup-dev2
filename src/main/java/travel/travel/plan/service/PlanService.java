@@ -5,10 +5,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import travel.travel.location.domain.Location;
-import travel.travel.location.dto.LocationResDto;
 import travel.travel.location.dto.LocationThumbResDto;
 import travel.travel.member.domain.Member;
 import travel.travel.member.repository.MemberRepository;
@@ -51,7 +49,7 @@ public class PlanService{
     }
 
 
-    public PlanResDto planReadDayList(Long planId, Integer day) {
+    public PlanResDto planReadByDay(Long planId, Integer day) {
         Plan existingPlan = planRepository.findById(planId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
 

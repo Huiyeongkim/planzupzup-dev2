@@ -32,7 +32,7 @@ public class LocationController {
     }
 
     @GetMapping("/{locationId}")
-    public ResponseEntity<CommonResDto> locationReadDayList(@PathVariable Long locationId) {
+    public ResponseEntity<CommonResDto> locationRead(@PathVariable Long locationId) {
         LocationResDto dto = locationService.locationRead(locationId);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "지역상세조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }

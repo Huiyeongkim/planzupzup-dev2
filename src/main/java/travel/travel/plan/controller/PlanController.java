@@ -35,8 +35,8 @@ public class PlanController {
     }
 
     @GetMapping("/{planId}/{day}")
-    public ResponseEntity<CommonResDto> planReadDayList(@PathVariable Long planId, @PathVariable Integer day) {
-        PlanResDto dto = planService.planReadDayList(planId, day);
+    public ResponseEntity<CommonResDto> planReadByDay(@PathVariable Long planId, @PathVariable Integer day) {
+        PlanResDto dto = planService.planReadByDay(planId, day);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "날짜별 지역목록조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
