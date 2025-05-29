@@ -29,10 +29,10 @@ public class SecurityConfig {
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     private final String[] whiteList = {
-            "/login/**",
-            "/plan/**",
-            "/location/**",
-            "/oauth2/**",
+            "login/**",
+            "/api/plan/**",
+            "/api/location/**",
+            "/api/oauth2/**",
             "/**"
     };
 
