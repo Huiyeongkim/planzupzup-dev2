@@ -58,7 +58,7 @@ public class JwtTokenProvider {
                 .path("/")
                 .httpOnly(true)
                 .sameSite("None")
-                .secure(false)
+                .secure(true)
                 .build();
     }
 
