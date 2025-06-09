@@ -1,8 +1,14 @@
 package travel.travel.plan.repository;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import travel.travel.plan.domain.Plan;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
 
+    @Query("SELECT p FROM Plan p WHERE p.planId > :cursor ORDER BY p.planId ASC")
+    Slice<Plan> findByCursor(@Param("cursor") Long cursor, Pageable pageable);
 }
