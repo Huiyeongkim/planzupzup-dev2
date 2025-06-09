@@ -3,6 +3,7 @@ package travel.travel.plan.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,12 +43,15 @@ public class PlanController {
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "날짜별 지역목록조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
-
     @GetMapping
-    public ResponseEntity<CommonResDto> planReadList() {
-        List<PlanThumbResDto> dto = planService.planReadList();
+    public ResponseEntity<CommonResDto> planReadList(
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Slice<PlanThumbResDto> dto = planService.planReadList(cursor, size);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "계획목록조회가 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
+
 
     @PutMapping("/{planId}/order")
     public ResponseEntity<CommonResDto> updateScheduleOrder(

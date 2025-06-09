@@ -5,6 +5,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import travel.travel.location.domain.Location;
 import travel.travel.location.dto.LocationOrderUpdateReqDto;
@@ -80,10 +83,15 @@ public class PlanService{
         return existingPlan.fromEntityByDay(filteredLocations);
     }
 
-    public List<PlanThumbResDto> planReadList() {
-        return planRepository.findAll().stream()
-                .map(Plan::fromThumbEntity)
-                .collect(Collectors.toList());
+    public Slice<PlanThumbResDto> planReadList(Long cursor, int size) {
+        if (cursor == null) {
+            cursor = 0L;
+        }
+
+        Pageable pageable = PageRequest.of(0, size);
+        Slice<Plan> plans = planRepository.findByCursor(cursor, pageable);
+
+        return plans.map(Plan::fromThumbEntity);
     }
 
     public PlanResDto planUpdate(Long planId, PlanUpdateReqDto planUpdateReqDto) {
