@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import travel.travel.commit.dto.CommitResDto;
 import travel.travel.common.domain.BaseEntity;
 import travel.travel.member.domain.Member;
+import travel.travel.plan.domain.Plan;
 
 @Getter
 @Builder
@@ -29,12 +30,16 @@ public class Commit extends BaseEntity {
 
     private String content;
 
+    @ManyToOne
+    private Plan plan;
+
     public CommitResDto fromEntity() {
         return CommitResDto.builder()
                 .commitId(commitId)
                 .nickName(member.getNickName())
                 .parentId(parent.getCommitId())
                 .content(content)
+                .planId(plan.getPlanId())
                 .build();
     }
 }

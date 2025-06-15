@@ -13,4 +13,5 @@ public class CommitResDto {
     private String content;
     private Long parentId;
     private String nickName;
+    private Long planId;
 }
