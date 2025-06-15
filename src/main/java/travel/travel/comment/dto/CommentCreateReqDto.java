@@ -1,21 +1,21 @@
-package travel.travel.commit.dto;
+package travel.travel.comment.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import travel.travel.commit.domain.Commit;
+import travel.travel.comment.domain.Comment;
 import travel.travel.member.domain.Member;
 import travel.travel.plan.domain.Plan;
 
 @Setter
 @Getter
-public class CommitCreateReqDto {
+public class CommentCreateReqDto {
 
     private String content;
     private Long parentId;
     private Long planId;
 
-    public Commit toEntity(Member member, Commit parent, Plan plan) {
-        return Commit.builder()
+    public Comment toEntity(Member member, Comment parent, Plan plan) {
+        return Comment.builder()
                 .content(this.content)
                 .parent(parent)
                 .member(member)

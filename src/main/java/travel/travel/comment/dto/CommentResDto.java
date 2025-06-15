@@ -1,4 +1,4 @@
-package travel.travel.commit.dto;
+package travel.travel.comment.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -8,8 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Builder
-public class CommitResDto {
-    private Long commitId;
+public class CommentResDto {
+    private Long commentId;
     private String content;
     private Long parentId;
     private String nickName;
