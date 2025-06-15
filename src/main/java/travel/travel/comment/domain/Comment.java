@@ -10,6 +10,10 @@ import travel.travel.common.domain.BaseEntity;
 import travel.travel.member.domain.Member;
 import travel.travel.plan.domain.Plan;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -33,6 +37,9 @@ public class Comment extends BaseEntity {
     @ManyToOne
     private Plan plan;
 
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    private List<Comment> children = new ArrayList<>();
+
     public CommentResDto fromEntity() {
         return CommentResDto.builder()
                 .commentId(commentId)
@@ -40,6 +47,9 @@ public class Comment extends BaseEntity {
                 .parentId(parent != null ? parent.getCommentId() : null)
                 .content(content)
                 .planId(plan != null ? plan.getPlanId() : null)
+                .children(children.stream()
+                        .map(Comment::fromEntity)
+                        .collect(Collectors.toList()))
                 .build();
     }
 

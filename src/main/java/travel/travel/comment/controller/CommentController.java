@@ -10,6 +10,8 @@ import travel.travel.comment.dto.CommentUpdateReqDto;
 import travel.travel.comment.service.CommentService;
 import travel.travel.common.dto.CommonResDto;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/comment")
@@ -33,5 +35,11 @@ public class CommentController  {
     public ResponseEntity<CommonResDto> commentDelete(@PathVariable Long commentId) {
         CommentResDto dto = commentService.commentDelete(commentId);
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "댓글삭제가 성공적으로 되었습니다.", dto), HttpStatus.OK);
+    }
+
+    @GetMapping("/{planId}")
+    public ResponseEntity<CommonResDto> getComments(@PathVariable Long planId) {
+        List<CommentResDto> dtos = commentService.getCommentsByPost(planId);
+        return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "댓글삭제가 성공적으로 되었습니다.", dtos), HttpStatus.OK);
     }
 }

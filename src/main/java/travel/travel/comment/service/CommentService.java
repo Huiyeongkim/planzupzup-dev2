@@ -15,6 +15,9 @@ import travel.travel.member.repository.MemberRepository;
 import travel.travel.plan.domain.Plan;
 import travel.travel.plan.repository.PlanRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
@@ -78,5 +81,14 @@ public class CommentService {
 
         commentRepository.delete(findComment);
         return findComment.fromEntity();
+    }
+
+    public List<CommentResDto> getCommentsByPost(Long planId) {
+        Plan findPlan = planRepository.findById(planId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
+        List<Comment> topLevelComments = commentRepository.findByPlanAndParentIsNull(findPlan);
+        return topLevelComments.stream()
+                .map(Comment::fromEntity)
+                .collect(Collectors.toList());
     }
 }
