@@ -15,7 +15,6 @@ import travel.travel.member.repository.MemberRepository;
 import travel.travel.plan.domain.Plan;
 import travel.travel.plan.repository.PlanRepository;
 
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -61,6 +60,23 @@ public class CommitService {
         }
 
         findCommit.updateCommit(commitUpdateReqDto.getContent());
+        return findCommit.fromEntity();
+    }
+
+    public CommitResDto commitDelete(Long commitId) {
+        //        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String memberId = "1";
+        Member member = memberRepository.findById(Long.valueOf(memberId))
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
+
+        Commit findCommit = commitRepository.findById(commitId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 댓글입니다."));
+
+        if (!member.equals(findCommit.getMember())) {
+            throw new IllegalStateException("본인 댓글만 수정할 수 있습니다.");
+        }
+
+        commitRepository.delete(findCommit);
         return findCommit.fromEntity();
     }
 }

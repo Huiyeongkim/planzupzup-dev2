@@ -29,4 +29,9 @@ public class CommitController  {
         return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "댓글수정이 성공적으로 되었습니다.", dto), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{commitId}")
+    public ResponseEntity<CommonResDto> commitDelete(@PathVariable Long commitId) {
+        CommitResDto dto = commitService.commitDelete(commitId);
+        return new ResponseEntity<>(new CommonResDto(HttpStatus.OK, "댓글삭제가 성공적으로 되었습니다.", dto), HttpStatus.OK);
+    }
 }
