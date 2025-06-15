@@ -1,16 +1,20 @@
 package travel.travel.commit.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import travel.travel.common.domain.BaseEntity;
+import travel.travel.member.domain.Member;
 
 
 @Entity
 @Table(name= "commit")
 public class Commit extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commitId;
+
+    @ManyToOne
+    private Member member;
+
+    @ManyToOne
+    private Commit parentId;
 }
