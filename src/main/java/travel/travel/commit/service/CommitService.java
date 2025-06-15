@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service;
 import travel.travel.commit.domain.Commit;
 import travel.travel.commit.dto.CommitCreateReqDto;
 import travel.travel.commit.dto.CommitResDto;
+import travel.travel.commit.dto.CommitUpdateReqDto;
 import travel.travel.commit.repository.CommitRepository;
 import travel.travel.member.domain.Member;
 import travel.travel.member.repository.MemberRepository;
 import travel.travel.plan.domain.Plan;
 import travel.travel.plan.repository.PlanRepository;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,8 +33,9 @@ public class CommitService {
         Member member = memberRepository.findById(Long.valueOf(memberId))
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
-        Plan plan = planRepository.findById(commitCreateReqDto.getPlanId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
+//        Plan plan = planRepository.findById(commitCreateReqDto.getPlanId())
+//                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계획입니다."));
+        Plan plan = null;
 
         Commit parent = null;
         if (commitCreateReqDto.getParentId() != null) {
@@ -41,5 +45,22 @@ public class CommitService {
 
         Commit savedCommit = commitRepository.save(commitCreateReqDto.toEntity(member, parent, plan));
         return savedCommit.fromEntity();
+    }
+
+    public CommitResDto commitUpdate(Long commitId, CommitUpdateReqDto commitUpdateReqDto) {
+        //        String memberId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String memberId = "1";
+        Member member = memberRepository.findById(Long.valueOf(memberId))
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
+
+        Commit findCommit = commitRepository.findById(commitId)
+                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 댓글입니다."));
+
+        if (!member.equals(findCommit.getMember())) {
+            throw new IllegalStateException("본인 댓글만 수정할 수 있습니다.");
+        }
+
+        findCommit.updateCommit(commitUpdateReqDto.getContent());
+        return findCommit.fromEntity();
     }
 }

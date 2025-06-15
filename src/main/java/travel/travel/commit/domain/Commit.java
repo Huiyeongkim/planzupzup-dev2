@@ -37,9 +37,13 @@ public class Commit extends BaseEntity {
         return CommitResDto.builder()
                 .commitId(commitId)
                 .nickName(member.getNickName())
-                .parentId(parent.getCommitId())
+                .parentId(parent != null ? parent.getCommitId() : null)
                 .content(content)
-                .planId(plan.getPlanId())
+                .planId(plan != null ? plan.getPlanId() : null)
                 .build();
+    }
+
+    public void updateCommit(String content) {
+        this.content = content;
     }
 }
