@@ -14,6 +14,8 @@ public class Member extends BaseEntity {
     @Id
     private Long id;
 
+    private String nickName;
+
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private Role role;
